@@ -12,11 +12,19 @@ resource "random_string" "suffix" {
 locals {
   prefix = "${var.project_name}-${var.environment}"
 
-  # Storage Account naming constraints:
-  # - lowercase only
+  # base sans tirets/underscores, lowercase
+  storage_base = lower(replace(replace("${var.project_name}${var.environment}", "-", ""), "_", ""))
+
+  # Storage account name constraints:
   # - 3-24 chars
-  # - letters and numbers only
-  storage_account_name = lower(replace(replace("${var.project_name}${var.environment}${random_string.suffix.result}", "-", ""), "_", ""))
+  # - storage_base + 6 random chars
+  storage_account_name = substr("${local.storage_base}${random_string.suffix.result}", 0, 24)
+
+  acr_name = substr(
+    lower(replace(replace("${var.project_name}${var.environment}${random_string.suffix.result}", "-", ""), "_", "")),
+    0,
+    50
+  )
 }
 
 module "storage" {
@@ -28,4 +36,12 @@ module "storage" {
 
   raw_container_name       = "raw"
   processed_container_name = "processed"
+}
+
+module "acr" {
+  source = "./modules/acr"
+
+  resource_group_name = data.azurerm_resource_group.this.name
+  location            = data.azurerm_resource_group.this.location
+  acr_name            = local.acr_name
 }

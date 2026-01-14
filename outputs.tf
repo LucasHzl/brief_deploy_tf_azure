@@ -25,3 +25,16 @@ output "raw_container_name" {
 output "processed_container_name" {
   value = module.storage.processed_container_name
 }
+
+output "acr_login_server" {
+  value = module.acr.login_server
+}
+
+output "acr_admin_username" {
+  value = module.acr.admin_username
+}
+
+output "acr_admin_password" {
+  value     = module.acr.admin_password
+  sensitive = true
+}
