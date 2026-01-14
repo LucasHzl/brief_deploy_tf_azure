@@ -1,0 +1,4 @@
+project_name        = "nom du projet"
+environment         = "dev, preprod, prod"
+location            = "francecentral, westeurope"
+resource_group_name = "nom de votre rg"
