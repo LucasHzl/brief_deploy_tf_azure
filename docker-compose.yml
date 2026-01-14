@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nyc_taxi_postgres
+    environment:
+      POSTGRES_USER: taxi_user
+      POSTGRES_PASSWORD: taxi_password
+      POSTGRES_DB: taxi_data
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U taxi_user -d taxi_data" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - taxi_network
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: nyc_taxi_azurite
+    command: "azurite-blob --blobHost 0.0.0.0 --blobPort 10000"
+    ports:
+      - "10000:10000"
+    volumes:
+      - azurite_data:/data
+    environment:
+      AZURITE_ACCOUNTS: devstoreaccount1:Eby8vdM2RomM4vJFXpH8VU9sYC4FzFfxzJtLfLq6X3vO/FvOdbw92T5vY+P8qMhFc6qKfPw+9l6UwPTCw==
+    networks:
+      - taxi_network
+
+volumes:
+  postgres_data:
+    driver: local
+  azurite_data:
+    driver: local
+
+networks:
+  taxi_network:
+    driver: bridge

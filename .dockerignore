@@ -1,0 +1,80 @@
+# .dockerignore
+# ==========================================
+# Données et fichiers volumineux
+# ==========================================
+data/
+data copy/
+*.parquet
+*.csv
+*.db
+*.duckdb
+*.sqlite
+*.gz
+*.zip
+*.tar
+
+# ==========================================
+# Python
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+.Python
+utils/__pycache__/
+
+# Environnements virtuels
+.venv/
+venv/
+ENV/
+env/
+.claude/
+benchmarks/
+
+# uv cache
+.uv/
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ==========================================
+# Development & Tools
+# ==========================================
+.git/
+.gitignore
+.gitattributes
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Tests et benchmarks
+benchmarks/
+tests/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Logs
+*.log
+
+# ==========================================
+# Docker & Terraform (pas besoin dans l'image)
+# ==========================================
+Dockerfile
+.dockerignore
+docker-compose.yml
+terraform/
+Makefile
+
+# ==========================================
+# Monitoring & Documentation
+# ==========================================
+monitoring/
+*.md
+README.md
