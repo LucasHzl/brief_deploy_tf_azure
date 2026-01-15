@@ -38,3 +38,19 @@ output "acr_admin_password" {
   value     = module.acr.admin_password
   sensitive = true
 }
+
+output "postgres_host" {
+  value = module.cosmos_postgres.host
+}
+
+output "postgres_port" {
+  value = module.cosmos_postgres.port
+}
+
+output "postgres_db" {
+  value = module.cosmos_postgres.db
+}
+
+output "postgres_user" {
+  value = module.cosmos_postgres.user
+}

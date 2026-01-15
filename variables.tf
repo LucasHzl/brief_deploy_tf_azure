@@ -19,3 +19,15 @@ variable "resource_group_name" {
   description = "Nom du Resource Group EXISTANT (fourni par l'organisation)"
   type        = string
 }
+
+variable "postgres_admin_user" {
+  description = "Utilisateur admin Postgres (ex: citus)"
+  type        = string
+  default     = "citus"
+}
+
+variable "postgres_admin_password" {
+  description = "Mot de passe admin Postgres (ne pas commit)"
+  type        = string
+  sensitive   = true
+}

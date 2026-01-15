@@ -10,7 +10,8 @@ resource "random_string" "suffix" {
 }
 
 locals {
-  prefix = "${var.project_name}-${var.environment}"
+  prefix      = "${var.project_name}-${var.environment}"
+  prefix_safe = lower(replace(local.prefix, "_", "-"))
 
   # base sans tirets/underscores, lowercase
   storage_base = lower(replace(replace("${var.project_name}${var.environment}", "-", ""), "_", ""))
@@ -25,6 +26,8 @@ locals {
     0,
     50
   )
+
+  pg_cluster_name = "cpg-${local.prefix_safe}-${random_string.suffix.result}"
 }
 
 module "storage" {
@@ -44,4 +47,15 @@ module "acr" {
   resource_group_name = data.azurerm_resource_group.this.name
   location            = data.azurerm_resource_group.this.location
   acr_name            = local.acr_name
+}
+
+module "cosmos_postgres" {
+  source = "./modules/cosmos_postgres"
+
+  resource_group_name = data.azurerm_resource_group.this.name
+  location            = data.azurerm_resource_group.this.location
+
+  cluster_name   = local.pg_cluster_name
+  admin_user     = var.postgres_admin_user
+  admin_password = var.postgres_admin_password
 }
