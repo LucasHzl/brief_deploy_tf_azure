@@ -35,6 +35,8 @@ locals {
   pg_cluster_name = "cpg-${local.prefix_safe}-${random_string.suffix.result}"
 
   log_analytics_name = "law-${local.prefix_safe}"
+
+  cae_name = "cae-${local.prefix_safe}"
 }
 
 module "storage" {
@@ -73,4 +75,13 @@ module "log_analytics" {
   resource_group_name = data.azurerm_resource_group.this.name
   location            = data.azurerm_resource_group.this.location
   workspace_name      = local.log_analytics_name
+}
+
+module "container_apps_env" {
+  source = "./modules/container_apps_env"
+
+  resource_group_name        = data.azurerm_resource_group.this.name
+  location                   = data.azurerm_resource_group.this.location
+  env_name                   = local.cae_name
+  log_analytics_workspace_id = module.log_analytics.id
 }
