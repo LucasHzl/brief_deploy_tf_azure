@@ -37,6 +37,10 @@ locals {
   log_analytics_name = "law-${local.prefix_safe}"
 
   cae_name = "cae-${local.prefix_safe}"
+
+  app_base = substr(local.prefix_safe, 0, 20)
+
+  container_app_name = "ca-${local.app_base}"
 }
 
 module "storage" {
@@ -84,4 +88,16 @@ module "container_apps_env" {
   location                   = data.azurerm_resource_group.this.location
   env_name                   = local.cae_name
   log_analytics_workspace_id = module.log_analytics.id
+}
+
+module "container_app" {
+  source = "./modules/container_app"
+
+  name                         = local.container_app_name
+  resource_group_name          = data.azurerm_resource_group.this.name
+  container_app_environment_id = module.container_apps_env.id
+
+  image  = "${module.acr.login_server}/nyc-taxi-pipeline:latest"
+  cpu    = 0.5
+  memory = "1Gi"
 }
