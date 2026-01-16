@@ -31,3 +31,13 @@ variable "postgres_admin_password" {
   type        = string
   sensitive   = true
 }
+
+variable "start_date" {
+  type        = string
+  description = "Début de période (YYYY-MM)"
+}
+
+variable "end_date" {
+  type        = string
+  description = "Fin de période (YYYY-MM)"
+}

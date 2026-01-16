@@ -97,7 +97,34 @@ module "container_app" {
   resource_group_name          = data.azurerm_resource_group.this.name
   container_app_environment_id = module.container_apps_env.id
 
+  registry_server   = module.acr.login_server
+  registry_username = module.acr.admin_username
+  registry_password = module.acr.admin_password
+
   image  = "${module.acr.login_server}/nyc-taxi-pipeline:latest"
   cpu    = 0.5
   memory = "1Gi"
+
+  env = {
+    AZURE_CONTAINER_NAME = "raw"
+
+    POSTGRES_HOST     = module.cosmos_postgres.host
+    POSTGRES_PORT     = "5432"
+    POSTGRES_DB       = module.cosmos_postgres.db
+    POSTGRES_USER     = module.cosmos_postgres.user
+    POSTGRES_SSL_MODE = "require"
+
+    START_DATE = var.start_date
+    END_DATE   = var.end_date
+  }
+
+  secret_values = {
+    "azure-storage-connection-string" = module.storage.connection_string
+    "postgres-password"               = var.postgres_admin_password
+  }
+
+  secret_env_map = {
+    AZURE_STORAGE_CONNECTION_STRING = "azure-storage-connection-string"
+    POSTGRES_PASSWORD               = "postgres-password"
+  }
 }
